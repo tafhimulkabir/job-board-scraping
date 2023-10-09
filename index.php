@@ -6,12 +6,16 @@ use Goutte\Client;
 use App\JobScraperFactory;
 use App\Scraper\JobBoards;
 use App\Enums\JobStatusEnum;
+use App\Database\DatabaseConnection;
 
 $scraperInit = new Client();
 $jobBoards = JobBoards::list();
 
 JobScraperFactory::run($jobBoards, $scraperInit);
 
+$config = require_once '../job-board-scraping/config.php';
+
+$dbConnection = DatabaseConnection::createConnection($config);
 
 // $enum = JobStatusEnum::get('open');
 // echo JobStatusEnum::set($enum);
