@@ -6,6 +6,7 @@ use Goutte\Client;
 use App\JobScraperFactory;
 use App\Scraper\JobBoards;
 use App\Enums\JobStatusEnum;
+use App\Database\CRUD;
 use App\Database\DatabaseConnection;
 
 $scraperInit = new Client();
@@ -13,9 +14,52 @@ $jobBoards = JobBoards::list();
 
 JobScraperFactory::run($jobBoards, $scraperInit);
 
-$config = require_once '../job-board-scraping/config.php';
+$config = require_once __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
 
 $dbConnection = DatabaseConnection::createConnection($config);
+
+$pdo = $dbConnection->connect();
+
+// Include your autoloader or require the necessary files
+
+
+// Create a CRUD instance
+$crud = new CRUD($dbConnection);
+
+// // Example: Create a record
+// $dataToInsert = [
+//     'student_name' => 'John Doe',
+//     'city' => 'Los Angeles',
+//     'age' => 30,
+// ];
+// $crud->create('student', $dataToInsert);
+
+// Example: Read records
+// $users = $crud->read('student', ['age > :age'], [':age' => 25]);
+
+$allStudents = $crud->read('student');
+foreach ($allStudents as $student) {
+    echo "Student Name: {$student['student_name']}, Age: {$student['age']}, City: {$student['city']}<br>";
+}
+
+
+// // Example: Update records
+// $dataToUpdate = [
+//     'age' => 31,
+// ];
+// $crud->update('users', $dataToUpdate, ['name = :name', ':name' => 'John Doe']);
+
+// // Example: Delete records
+// $crud->delete('users', ['age < :age', ':age' => 30]);
+
+// // Example: Search for records
+// $searchConditions = ['name LIKE :name', 'age > :age'];
+// $searchValues = [':name' => 'John%', ':age' => 30];
+// $searchResult = $crud->search('users', $searchConditions, $searchValues);
+
+
+
+
 
 // $enum = JobStatusEnum::get('open');
 // echo JobStatusEnum::set($enum);
